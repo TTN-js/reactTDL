@@ -35,11 +35,192 @@ import fetch from "isomorphic-fetch"
 
 import DOM from 'react-dom'
 import React, {Component} from 'react'
+import Backbone from 'backbone'
 
 function app() {
-    // start app
-    // new Router()
-    DOM.render(<p>test 2</p>, document.querySelector('.container'))
+
+// models
+
+var ItemModel = Backbone.Model.extend({
+	defaults: {
+		dueDate: "none",
+		done: false
+	},
+
+	initialize: function(taskName){
+		this.set({task: taskName})
+	}
+})
+
+var TodoCollection = Backbone.Collection.extend({
+			model: ItemModel,
+			initialize: function(){
+
+			}
+
+		})
+
+// views
+
+var TodoView = React.createClass({
+	_addItem: function(task){
+		this.state.all.add(new ItemModel(task))
+		this._update()
+	},
+
+	_update: function(){
+		this.setState({
+			all: this.state.all,
+			done: this.state.all.where({done:true}),
+			undone: this.state.all.where({done:false}),
+			showing: location.hash.substr(1)
+		})
+	},
+
+	getInitialState: function(){
+		return{
+				all: this.props.todoColl,
+				done: this.props.todoColl.where({done:true}),
+				undone: this.props.todoColl.where({done:false}),
+				showing: this.props.showing
+
+			}
+	},
+
+	render: function(){
+		var coll = this.state.all
+		if (this.state.showing === "done") coll = this.state.done
+		if (this.state.showing === "undone") coll = this.state.undone
+
+		return(
+			<div className="todoView">
+				<Tabs updater={this._update} showing={this.state.showing}/>
+				<ItemAdder adderFunc={this._addItem}/>
+				<TodoList updater={this._update} todoColl={coll}/>
+			</div>
+			)
+
+	}
+})
+
+var Tabs = React.createClass({
+	_genTab: function(tabType,i){
+		return <Tab updater={this.props.updater} key={i} type={tabType} showing={this.props.showing}/>
+
+	},
+
+	render: function(){
+		return(
+			<div className="tabs">
+	{["not done","done","all"].map(this._genTab)}
+			</div>
+			)
+	}
+
+})
+
+var Tab = React.createClass({
+	_changeRoute: function(){
+		location.hash = this.props.type
+		this.props.updater()
+	},
+
+	render:function(){
+		var styleObj = {}
+		if (this.props.type === this.props.showing){
+			styleObj.borderBottom = "#80DBD4"
+		}
+
+		return (
+			<div onClick={this._changeRoute} style={styleObj} className="tab">
+				<p>{this.props.type}</p>
+			</div>
+			)
+	}
+})
+
+var ItemAdder = React.createClass({
+	_handleKeyDown: function(keyEvent){
+		if (keyEvent.keyCode === 13) {
+			var guestName = keyEvent.target.value
+			this.props.adderFunc(guestName)
+			keyEvent.target.value= ""
+		}
+	},
+
+	render:function(){
+		return <input onKeyDown={this._handleKeyDown}/>
+	}
+})
+  
+var TodoList = React.createClass({
+	_makeItem: function(model,i) {
+		console.log(model,i)
+		return <Item key={i} updater={this.props.updater} itemModel={model}/>
+	},
+
+	render:function(){
+		return(
+			<div className="todoList">
+				{this.props.todoColl.map(this._makeItem)}
+			</div>
+			)
+	}
+})
+  
+var Item = React.createClass({
+	_toggleDone: function(){
+		if (this.props.itemModel.get("don")){
+			this.props.itemModel.se({done: false})
+		}
+		else
+		{
+			this.props.itemModel.set({done: true})
+		}
+		this.props.updater()
+	},
+
+	render: function(){
+		var buttonFiller = this.props.itemModel.get("done") ? "\u2713" : " "
+
+		return(
+			<div className="todoItem">
+				<p>{this.props.itemModel.get('task')}</p>
+		        <button onClick={this._toggleDone}>{buttonFiller}</button>
+	         </div>
+			)
+	}
+})
+  
+// router
+
+var TdRouter = Backbone.Router.extend({
+	routes: {
+		"done": "showDone",
+		"undone": "showUndone",
+		"*default": "home"
+	},
+
+	showDone: function(){
+		DOM.render(<TodoView showing="done" todoColl ={new TodoCollection()}/>, document.querySelector(".container")) 
+	},
+
+	home: function(){
+		DOM.render(<TodoView showing="home" todoColl={new TodoCollection()}/>, document.querySelector(".container"))
+	},
+
+	showUndone: function(){
+		DOM.render(<TodoView showing="undone" todoColl={new TodoCollection()}/>, document.querySelector(".container"))
+	},
+
+	initialize: function(){
+
+		Backbone.history.start()
+	}
+})
+
+var run = new TdRouter()
+
 }
 
 app()

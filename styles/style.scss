@@ -1,6 +1,5 @@
 @import "../bower_components/normalize-scss/_normalize.scss";
 @import "../bower_components/typeplate-starter-kit/scss/_typeplate.scss";
-
 p+p {
     text-indent: 0;
     margin-top: 0;
@@ -12,11 +11,13 @@ p {
     margin-right: auto;
 }
 
-ul, ol {
+ul,
+ol {
     max-width: 80ch;
     margin-left: 0;
     margin-right: auto;
 }
+
 
 /**
  * BOX-SIZING
@@ -27,9 +28,10 @@ ul, ol {
 *:after {
     box-sizing: border-box;
     transition-duration: 0.2s;
-    transition-property: all;//opacity, transform, color, background-color, border-color, z-index, background-image;
+    transition-property: all; //opacity, transform, color, background-color, border-color, z-index, background-image;
     transition-timing-function: ease;
 }
+
 
 /**
  * GRIDS
@@ -40,14 +42,12 @@ ul, ol {
     text-align: justify;
     font-size: 0;
     position: relative;
-
     > * {
         display: inline-block;
         width: 100%;
         font-size: 1rem;
         text-align: left;
     }
-
     &:after {
         display: table;
         width: 100%;
@@ -77,13 +77,13 @@ ul, ol {
 @include grid(2);
 @include grid(4);
 @include grid(8);
-@include grid_r(2,400);
-@include grid_r(2,800);
-@include grid_r(4,400);
-@include grid_r(4,800);
-@include grid_r(8,800);
-@include grid_r(8,1024);
-@include grid_r(8,1280);
+@include grid_r(2, 400);
+@include grid_r(2, 800);
+@include grid_r(4, 400);
+@include grid_r(4, 800);
+@include grid_r(8, 800);
+@include grid_r(8, 1024);
+@include grid_r(8, 1280);
 
 /**
  * GENERAL
@@ -92,9 +92,11 @@ ul, ol {
 img {
     max-width: 100%;
 }
+
 body {
     font-family: 'San Francisco', 'Helvetica', 'Trebuchet MS', Arial, sans-serif;
 }
+
 
 /**
  * PACE (automatic pre-loader thingy)
@@ -124,6 +126,117 @@ body {
     opacity: 1;
 }
 
+
 /**
  * App code
  */
+
+body {
+    min-width:865px;
+    background-color: #4A5F70;
+}
+
+.todoView {
+    max-width: 750px;
+    margin: auto;
+    margin-top: 3%;
+    text-align: center;
+    background: #4A5F70;
+    border: 5px solid #80DBD4;
+    padding: 25px;
+    position: relative;
+
+
+
+    .tabs {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translate(-50%, -100%);
+        margin: auto;
+        display: flex;
+        justify-content: space-between;
+        -moz-transform:rotate(-90deg);
+        ms-transform:rotate(-90deg);
+        -o-transform:rotate(-90deg);
+        -webkit-transform:rotate(-90deg);
+        transform-origin: bottom right;
+        position: absolute;
+        left: -510px;
+        
+
+
+
+        .tab {
+            display: inline-block;
+            border: 5px solid #80DBD4;
+            flex: 1;
+            margin: 0 10px;
+            padding: 5px 10px;
+            text-align: center;
+            width: 150px;
+            background: #4A5F70;
+            cursor: pointer;
+            color:#CADAE9;
+
+            p{
+                font-size:20px;
+                margin-bottom:0px;
+            }
+        }
+    }
+
+
+    input {
+        border: 3px solid #80DBD4;
+        margin: 10px;
+        background-color:#4A5F70;
+        color:#CADAE9;
+    }
+
+
+    input:focus {
+        outline: none;
+    }
+
+
+    .todoList {
+        min-height:600px;
+        text-align: left;
+
+        .todoItem {
+            background: #4A5F70;
+            border: 3px solid #80DBD4;
+            padding: 2%;
+            margin: 20px;
+            display: flex;
+
+
+            p {
+                font-size:15px;
+                margin:10px;
+                display: inline-block;
+                color: #CADAE9;
+                flex: 1;
+            }
+
+            button {
+                background: #4A5F70;
+                border: 3px solid #80DBD4;
+                padding: 0 3px;
+                margin: 10px;
+                color: #80DBD4;
+                width: 30px;
+                height: 30px;
+                line-height: 24px;
+                font-size: 24px;
+            }
+
+            button:focus {
+                outline: none;
+            }
+        }
+    }
+}
+
+
